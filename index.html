@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phantom Software Solution | Executor & Scripts</title>
+    
+    <link rel="icon" href="https://raw.githubusercontent.com/rcexecution447-blip/Img.com/main/1000021679.png" type="image/png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&family=Orbitron:wght@600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-dark: #050509;
+            --bg-card: rgba(15, 17, 30, 0.6);
+            
+            /* COLOR SCHEME */
+            --primary: #00F2FE; /* Neon Cyan */
+            --accent: #FF007F; /* Neon Pink */
+            --text-main: #ffffff;
+            --text-dim: #b0b0c0;
+            --border: rgba(0, 242, 254, 0.2);
+            --glow: 0 0 15px rgba(0, 242, 254, 0.4);
+            --glow-pink: 0 0 15px rgba(255, 0, 127, 0.4);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        
+        body { 
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* --- VIDEO BACKGROUND CSS --- */
+        .back-video {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            min-width: 100%;
+            min-height: 100%;
+            z-index: -2;
+            object-fit: cover;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6); /* Menggelapkan video agar teks terbaca */
+            z-index: -1;
+        }
+        /* --------------------------- */
+
+        /* --- HEADER --- */
+        header {
+            padding: 15px 5%;
+            background: rgba(5, 5, 9, 0.8);
+            position: fixed; width: 100%; top: 0; left: 0; 
+            z-index: 1000;
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            font-family: 'Orbitron';
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: var(--text-main);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .brand span { color: var(--primary); }
+        
+        .menu-toggle {
+            display: none;
+            font-size: 1.5rem;
+            color: var(--primary);
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .nav-links { display: flex; gap: 5px; }
+        
+        .nav-item { 
+            color: var(--text-main); text-decoration: none; font-weight: 600; 
+            font-size: 0.8rem; transition: 0.4s; padding: 10px 15px;
+            border-radius: 50px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .nav-item:hover, .nav-item.active { 
+            background: rgba(0, 242, 254, 0.1);
+            box-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
+        }
+
+        /* --- PAGES --- */
+        .page { display: none; padding: 120px 5% 50px; min-height: 100vh; }
+        .page.active { display: block; animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* --- SECTION TITLES --- */
+        .section-title {
+            font-family: 'Orbitron'; font-size: 2.5rem;
+            text-align: center; margin-bottom: 50px;
+            text-transform: uppercase;
+        }
+        .section-title span { color: var(--primary); text-shadow: var(--glow); }
+
+        /* --- GRID & CARD --- */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
+        
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 20px;
+            transition: 0.4s;
+            backdrop-filter: blur(5px);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(0, 242, 254, 0.2);
+        }
+
+        /* --- IMAGES & ICONS --- */
+        .card-img {
+            width: 100%; /* MEMENUHI KOTAK */
+            height: 200px; /* TINGGI KOTAK */
+            border-radius: 15px;
+            margin-bottom: 15px;
+            object-fit: cover; /* AGAR TIDAK DISTORSI */
+        }
+
+        /* --- BUTTONS --- */
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background: linear-gradient(45deg, #00BFFF, #00F2FE);
+            color: #050509;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 800;
+            transition: 0.3s;
+            margin-top: auto;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            width: 100%;
+        }
+        .btn:hover { box-shadow: 0 0 15px rgba(0, 242, 254, 0.5); }
+        .btn.disabled { background: #333; color: #777; cursor: not-allowed; pointer-events: none; }
+
+        /* --- VIDEOS --- */
+        .video-container {
+            position: relative; padding-bottom: 56.25%; height: 0; 
+            overflow: hidden; border-radius: 15px;
+            border: 2px solid var(--primary);
+            box-shadow: var(--glow);
+            width: 100%;
+        }
+        .video-container iframe {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        }
+        /* Style khusus untuk Shorts embed */
+        .video-container.shorts {
+            padding-bottom: 177.78%; /* Rasio 9:16 untuk Shorts */
+        }
+
+        /* --- FOOTER --- */
+        footer { text-align: center; padding: 30px; color: var(--text-dim); font-size: 0.9rem; border-top: 1px solid var(--border); }
+
+        /* --- RESPONSIVE MOBILE --- */
+        @media (max-width: 900px) {
+            .menu-toggle { display: block; }
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background: rgba(5, 5, 9, 0.95);
+                border-bottom: 1px solid var(--border);
+                padding: 20px 0;
+            }
+            .nav-links.active { display: flex; }
+            .nav-item { width: 100%; text-align: center; border-radius: 0; padding: 15px; }
+            .section-title { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="overlay"></div>
+    <video autoplay loop muted playsinline class="back-video">
+        <source src="https://raw.githubusercontent.com/rcexecution447-blip/Backgroun/main/b752c4947bcd7b9a8026e1159d354758_1771126807187.mp4" type="video/mp4">
+    </video>
+    <header>
+        <div class="brand">PHANTOM <span>SOLUTIONS</span></div>
+        <button class="menu-toggle" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </button>
+        <nav class="nav-links" id="navLinks">
+            <a href="#" class="nav-item active" onclick="showPage('home')">Home</a>
+            <a href="#" class="nav-item" onclick="showPage('features')">Features</a>
+            <a href="#" class="nav-item" onclick="showPage('showcase')">Showcase</a>
+            <a href="#" class="nav-item" onclick="showPage('download')">Download</a>
+            <a href="#" class="nav-item" onclick="showPage('social')">Social</a>
+        </nav>
+    </header>
+
+    <div id="home" class="page active">
+        <section style="text-align:center;">
+            <img src="https://raw.githubusercontent.com/rcexecution447-blip/Img.com/main/1000021679.png" alt="Logo" style="width: 150px; height: auto; margin-bottom: 20px; border-radius:50%; box-shadow: var(--glow);">
+            <h1 class="section-title">Phantom <span>Executor</span></h1>
+            <p style="color: var(--text-dim); margin-bottom: 30px; max-width: 600px; margin-left: auto; margin-right: auto;">
+                The fastest, most stable, and secure Roblox script executor solution for all platforms.
+            </p>
+            <div style="max-width: 800px; margin: 0 auto;">
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/wGF7PswOENQ" frameborder="0" allowfullscreen></iframe>
+                </div>
+            </div>
+            <p style="margin-top: 40px; color: var(--text-dim); font-size: 0.9rem;">Made by <span style="color:var(--primary)">Phantom Software Solution</span></p>
+        </section>
+    </div>
+
+    <div id="features" class="page">
+        <h2 class="section-title">Executor <span>Features</span></h2>
+        <div class="grid">
+            <div class="card">
+                <img src="https://raw.githubusercontent.com/rcexecution447-blip/Snapys/main/images%20(28).jpeg" alt="Icon" class="card-img">
+                <h3>RC7 Android 64</h3>
+                <p style="color:var(--text-dim); margin-top:10px;">High performance for modern Android devices.</p>
+            </div>
+            <div class="card">
+                <img src="https://raw.githubusercontent.com/rcexecution447-blip/Ecli/main/images%20(27).jpeg" alt="Icon" class="card-img">
+                <h3>RC7 Android 32</h3>
+                <p style="color:var(--text-dim); margin-top:10px;">Stable execution for older Android devices.</p>
+            </div>
+            <div class="card">
+                <img src="https://raw.githubusercontent.com/rcexecution447-blip/Eclix/main/images%20(30).jpeg" alt="Icon" class="card-img">
+                <h3>RC7 iOS</h3>
+                <p style="color:var(--text-dim); margin-top:10px;">Premium script executor for Apple ecosystem.</p>
+            </div>
+            <div class="card">
+                <i class="fas fa-desktop fa-5x" style="color:var(--primary); margin-bottom:25px; margin-top:10px;"></i>
+                <h3>RC7 Windows</h3>
+                <p style="color:var(--text-dim); margin-top:10px;">Intriga UI Theme, Powerful PC features.</p>
+            </div>
+            <div class="card">
+                <img src="https://raw.githubusercontent.com/rcexecution447-blip/Unipi/main/images%20(31).jpeg" alt="Icon" class="card-img">
+                <h3>Script Ware V2</h3>
+                <p style="color:var(--text-dim); margin-top:10px;">Most complete feature set for advanced users.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="showcase" class="page">
+        <h2 class="section-title">Video <span>Showcase</span></h2>
+        <div class="grid">
+            <div class="card">
+                <div class="video-container shorts">
+                    <iframe src="https://www.youtube.com/embed/FuR5whY6KS0" frameborder="0" allowfullscreen></iframe>
+                </div>
+                <h3 style="margin-top:15px;">RC7 Android 64</h3>
+            </div>
+            <div class="card">
+                <div class="video-container shorts">
+                    <iframe src="https://www.youtube.com/embed/CsqvrtKiXKs" frameborder="0" allowfullscreen></iframe>
+                </div>
+                <h3 style="margin-top:15px;">RC7 Android 32</h3>
+            </div>
+            <div class="card">
+                <div class="video-container shorts">
+                    <iframe src="https://www.youtube.com/embed/7nC06Kgg2D0" frameborder="0" allowfullscreen></iframe>
+                </div>
+                <h3 style="margin-top:15px;">RC7 iOS</h3>
+            </div>
+            <div class="card">
+                <div class="video-container shorts">
+                    <iframe src="https://www.youtube.com/embed/Hx1V7Rhhd9E" frameborder="0" allowfullscreen></iframe>
+                </div>
+                <h3 style="margin-top:15px;">Script Ware V2</h3>
+            </div>
+        </div>
+    </div>
+
+    <div id="download" class="page">
+        <h2 class="section-title">Download <span>Phantom</span></h2>
+        <div class="grid">
+            <div class="card">
+                <img src="https://raw.githubusercontent.com/rcexecution447-blip/Snapys/main/images%20(28).jpeg" alt="Icon" class="card-img">
+                <h3>RC7 Android 64 🟢</h3>
+                <a href="https://drive.google.com/drive/folders/1rqx9hJwbLAaTHD4MaPLXiyS-7XHiSDBK" class="btn" target="_blank">Download</a>
+            </div>
+            <div class="card">
+                <img src="https://raw.githubusercontent.com/rcexecution447-blip/Ecli/main/images%20(27).jpeg" alt="Icon" class="card-img">
+                <h3>RC7 Android 32 🟢</h3>
+                <a href="https://drive.google.com/drive/folders/1J8PObMLqOyIIxc3a0utofEg2xiWw7H6C" class="btn" target="_blank">Download</a>
+            </div>
+            <div class="card">
+                <img src="https://raw.githubusercontent.com/rcexecution447-blip/Eclix/main/images%20(30).jpeg" alt="Icon" class="card-img">
+                <h3>RC7 iOS 🟢</h3>
+                <a href="https://drive.google.com/drive/folders/1T-B3EM0eUo4PXUg6rjV9Vg4Q91z0ga1e" class="btn" target="_blank">Download</a>
+            </div>
+            <div class="card">
+                <i class="fas fa-desktop fa-5x" style="color:var(--primary); margin-bottom:25px; margin-top:10px;"></i>
+                <h3>RC7 Windows 🔴</h3>
+                <a href="#" class="btn disabled">Down</a>
+            </div>
+            <div class="card">
+                <img src="https://raw.githubusercontent.com/rcexecution447-blip/Unipi/main/images%20(31).jpeg" alt="Icon" class="card-img">
+                <h3>Script Ware V2 🟢</h3>
+                <a href="https://drive.google.com/drive/folders/1oIIbLPBpzVkjBFI7SzloEpphzTy8Q7Er" class="btn" target="_blank">Download</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="social" class="page">
+        <h2 class="section-title">Social <span>Media</span></h2>
+        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+            <a href="https://youtube.com/@rc7reborn1?si=DGqJJctej4bgJhQu" target="_blank" class="card" style="text-decoration:none;">
+                <i class="fab fa-youtube fa-5x" style="color:#FF0000; margin-bottom:20px; margin-top:10px;"></i>
+                <h3 style="color:var(--text-main)">YouTube</h3>
+            </a>
+            <a href="https://tiktok.com/@phantom_software" target="_blank" class="card" style="text-decoration:none;">
+                <i class="fab fa-tiktok fa-5x" style="color:var(--text-main); margin-bottom:20px; margin-top:10px;"></i>
+                <h3 style="color:var(--text-main)">TikTok</h3>
+            </a>
+            <a href="https://discord.gg/CYqeKv5YsF" target="_blank" class="card" style="text-decoration:none;">
+                <i class="fab fa-discord fa-5x" style="color:#5865F2; margin-bottom:20px; margin-top:10px;"></i>
+                <h3 style="color:var(--text-main)">Discord</h3>
+            </a>
+            <a href="https://github.com/rcexecution447-blip" target="_blank" class="card" style="text-decoration:none;">
+                <i class="fab fa-github fa-5x" style="color:var(--text-main); margin-bottom:20px; margin-top:10px;"></i>
+                <h3 style="color:var(--text-main)">GitHub</h3>
+            </a>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Phantom Software Solution. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+
+        function showPage(pageId) {
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.remove('active');
+            
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => item.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            
+            window.scrollTo(0, 0);
+        }
+    </script>
+</body>
+</html>
